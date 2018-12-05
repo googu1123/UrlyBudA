@@ -520,6 +520,8 @@ public class CampaignController {
 
 		System.out.println("in >>>>>>"+in);
 		
+
+		
 		String result = HttpConnection.PostData(Common.SHORT_URL_SERVER+"/clicks?",in);
 		
 		System.out.println("result >> " + result);

@@ -1,0 +1,932 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="tsm_sql">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="tsmVO" type="egovframework.rte.cms.service.TsmVO"/>
+	
+	<resultMap id="admin_info" class="egovframework.rte.cms.service.TsmVO">
+		<result property="aidx" column="aidx"/>
+		<result property="name" column="name"/>
+		<result property="phone" column="phone"/>
+		<result property="cp_id" column="cp_id"/>
+		<result property="reg_date" column="reg_date"/>
+		<result property="auth" column="auth"/>
+	</resultMap>
+	
+	<select id="tsmDAO.loginCheck" parameterClass="tsmVO" resultMap="admin_info">
+		SELECT AIDX, NAME, PHONE, CP_ID, REG_DATE, AUTH
+		FROM SMART_AGENT_INFO
+		WHERE AIDX = #aidx# AND PASSWD = #passwd#
+	</select>
+	
+	
+	<!-- 메시지 규격 리스트 조회 -->
+	<resultMap id="standList" class="egovframework.rte.cms.service.TsmVO">
+		<result property="pidx" column="pidx"/>
+		<result property="aidx" column="aidx"/>
+		<result property="code" column="code"/>
+		<result property="subject" column="subject"/>
+		<result property="content" column="content"/>
+		<result property="reg_date" column="reg_date"/>
+		<result property="use_yn" column="use_yn"/>
+		<result property="process" column="process"/>
+	</resultMap>
+	
+	<select id="tsmDAO.msgStandardCnt" parameterClass="tsmVO" resultClass="int">
+		SELECT COUNT(*) as CNT
+		FROM SMART_MESSAGE_TEMPLATE
+		WHERE 1=1 
+			<isNotNull property="code">
+				<isNotEmpty property="code">
+			           AND CODE LIKE '%' || #code# || '%' 
+				</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="aidx">
+				<isNotEmpty property="aidx">
+					AND AIDX LIKE '%' || #aidx# || '%'
+				</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="subject">
+				<isNotEmpty property="subject">
+					AND SUBJECT LIKE '%' ||  #subject#  || '%'
+				</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="content">
+				<isNotEmpty property="content">
+					AND CONTENT LIKE '%' ||  #content#  || '%'
+				</isNotEmpty>
+			</isNotNull>
+			<isNotEqual property="use_yn" compareValue="All">
+				<isNotNull property="use_yn">
+					<isNotEmpty property="use_yn">
+						AND USE_YN = #use_yn#
+					</isNotEmpty>
+				</isNotNull>
+			</isNotEqual>
+	</select>
+	
+	<select id="tsmDAO.msgStandard" parameterClass="tsmVO" resultMap="standList">
+		SELECT PIDX, CODE, AIDX, SUBJECT, CONTENT, TO_CHAR(NVL(MOD_DATE, REG_DATE),'YYYY-MM-DD') as REG_DATE, USE_YN, PROCESS, LIMIT_YN, LIMIT_TYPE, LIMIT_COUNT, LIMIT_START_HOUR, LIMIT_END_HOUR
+		FROM (
+			SELECT ROW_NUMBER() OVER(ORDER BY REG_DATE DESC) as IDX, PIDX, CODE, AIDX, SUBJECT, CONTENT, REG_DATE, MOD_DATE, USE_YN, PROCESS, LIMIT_YN, LIMIT_TYPE, LIMIT_COUNT, LIMIT_START_HOUR, LIMIT_END_HOUR
+			FROM SMART_MESSAGE_TEMPLATE
+			WHERE 1=1 
+			<isNotNull property="code">
+				<isNotEmpty property="code">
+			           AND CODE LIKE '%' || #code# ||'%' 
+				</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="aidx">
+				<isNotEmpty property="aidx">
+					AND AIDX LIKE '%' || #aidx# || '%'
+				</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="subject">
+				<isNotEmpty property="subject">
+					AND SUBJECT LIKE '%' ||  #subject#  || '%'
+				</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="content">
+				<isNotEmpty property="content">
+					AND CONTENT LIKE '%' ||  #content#  || '%'
+				</isNotEmpty>
+			</isNotNull>
+			<isNotEqual property="use_yn" compareValue="All">
+				<isNotNull property="use_yn">
+					<isNotEmpty property="use_yn">
+						AND USE_YN = #use_yn#
+					</isNotEmpty>
+				</isNotNull>
+			</isNotEqual>
+		) a
+		<![CDATA[
+			WHERE 1=1 AND IDX > #startNum# AND IDX <= (#recordCount# +#startNum#)
+		]]>	
+		ORDER BY a.REG_DATE DESC
+	</select>
+	
+	
+	<!-- 메시지 규격 상세 -->
+	<resultMap id="standDetail" class="egovframework.rte.cms.service.TsmVO">
+		<result property="pidx" column="pidx"/>
+		<result property="aidx" column="aidx"/>
+		<result property="code" column="code"/>
+		<result property="subject" column="subject"/>
+		<result property="content" column="content"/>
+		<result property="reg_date" column="reg_date"/>
+		<result property="mod_date" column="mod_date"/>
+		<result property="priority" column="priority"/>
+		<result property="use_yn" column="use_yn"/>
+		<result property="deli_no" column="deli_no"/>
+		<result property="description" column="description"/>
+		<result property="table_div" column="table_div"/>
+		<result property="info_yn" column="info_yn"/>
+		<result property="div_nm" column="div_nm"/>
+		<result property="process" column="process"/>
+		<result property="use" column="use"/>
+		<result property="limit_yn" column="limit_yn"/>
+		<result property="limit_type" column="limit_type"/>
+		<result property="limit_count" column="limit_count"/>
+		<result property="limit_start_hour" column="limit_start_hour"/>
+		<result property="limit_end_hour" column="limit_end_hour"/>
+	</resultMap>
+	
+	<select id="tsmDAO.msgStandardDetail" parameterClass="tsmVO" resultMap="standDetail">
+		SELECT PIDX, CODE, AIDX, SUBJECT, CONTENT
+			, TO_CHAR(REG_DATE,'YYYY-MM-DD') as REG_DATE
+			, TO_CHAR(NVL(MOD_DATE,sysdate),'YYYY-MM-DD') as MOD_DATE
+			, PRIORITY
+			, USE_YN
+			, DESCRIPTION
+			, DELI_NO
+			, TABLE_DIV
+			, INFO_YN
+			, DIV_NM
+			, PROCESS
+			, USE
+			, LIMIT_YN
+			, LIMIT_TYPE
+			, LIMIT_COUNT
+			, LIMIT_START_HOUR
+			, LIMIT_END_HOUR
+		FROM SMART_MESSAGE_TEMPLATE
+		WHERE PIDX = #pidx#
+	</select>
+	
+	
+	<!-- 메시지 규격 등록 -->
+	<insert id="tsmDAO.msgStandardInsert" parameterClass="tsmVO">
+		INSERT INTO SMART_MESSAGE_TEMPLATE(
+			PIDX, CODE, SUBJECT, AIDX, CONTENT, REG_DATE, PRIORITY, USE_YN, TABLE_DIV, INFO_YN, DIV_NM, DESCRIPTION, PROCESS, USE
+			,LIMIT_YN, LIMIT_TYPE, LIMIT_COUNT, LIMIT_START_HOUR, LIMIT_END_HOUR
+		) VALUES (
+			TEMPLATE_SEQ.NEXTVAL, '-', #subject#, #aidx#
+			, #content#
+			, sysdate, #priority#, #use_yn#, #table_div#, #info_yn#, #div_nm#, #description#, 'A', 'N'
+			, #limit_yn#, #limit_type#, #limit_count#, #limit_start_hour#, #limit_end_hour#
+		)
+		
+		<selectKey keyProperty="pidx" resultClass="String">
+			SELECT PIDX FROM (
+				SELECT PIDX FROM SMART_MESSAGE_TEMPLATE ORDER BY REG_DATE DESC
+			) 
+			WHERE ROWNUM = 1
+	   </selectKey>
+	</insert>
+	
+	<insert id="tsmDAO.msgStandardInsertBatch" parameterClass="tsmVO">
+		INSERT INTO SMART_MESSAGE_TEMPLATE(
+			PIDX, CODE, DELI_NO, SUBJECT, AIDX, CONTENT, REG_DATE, PRIORITY, USE_YN, TABLE_DIV, INFO_YN, DIV_NM, DESCRIPTION, PROCESS, USE
+			,LIMIT_YN, LIMIT_TYPE, LIMIT_COUNT,LIMIT_START_HOUR, LIMIT_END_HOUR
+		) VALUES (
+			TEMPLATE_SEQ.NEXTVAL, #code#, #deli_no#, #subject#, #aidx#
+			, #content#
+			, sysdate, #priority#, #use_yn#, #table_div#, #info_yn#, #div_nm#, #description#, 'A', #use#
+			, #limit_yn#, #limit_type#, #limit_count#, #limit_start_hour#, #limit_end_hour#
+		)
+		
+		<selectKey keyProperty="pidx" resultClass="String">
+			SELECT PIDX FROM (
+				SELECT PIDX FROM SMART_MESSAGE_TEMPLATE ORDER BY REG_DATE DESC
+			) 
+			WHERE ROWNUM = 1
+	   </selectKey>
+	</insert>
+	
+	<insert id="tsmDAO.msgStandardInsertHistory" parameterClass="tsmVO">
+		INSERT INTO SMART_MESSAGE_TEMPLATE_HISTORY(
+			PIDX, CODE, SUBJECT, AIDX, CONTENT, REG_DATE, MOD_DATE, PRIORITY, USE_YN, TABLE_DIV, INFO_YN, DIV_NM, DESCRIPTION, STATUS, PROCESS, DELI_NO, USE
+			,LIMIT_YN, LIMIT_TYPE, LIMIT_COUNT, LIMIT_START_HOUR, LIMIT_END_HOUR
+		) VALUES (
+			TEMPLATE_HIS_SEQ.NEXTVAL, #code#, #subject#, #aidx#
+			, #content#
+			, sysdate, sysdate, #priority#, #use_yn#, #table_div#, #info_yn#, #div_nm#, #description#, #status#, #process#, #deli_no#, #use#
+			, #limit_yn#, #limit_type#, #limit_count#, #limit_start_hour#, #limit_end_hour#
+		)
+	</insert>
+	
+	<delete id="tsmDAO.msgStandardDelete" parameterClass="tsmVO">
+		DELETE FROM SMART_MESSAGE_TEMPLATE
+		WHERE PIDX = #pidx#
+	</delete>
+	
+	<update id="tsmDAO.msgStandardUpdate" parameterClass="tsmVO">
+		UPDATE SMART_MESSAGE_TEMPLATE
+		SET
+			CONTENT = #content#,
+			USE_YN = #use_yn#,
+			PRIORITY = #priority#,
+			CODE = #code#,
+			DELI_NO = #deli_no#,
+			TABLE_DIV = #table_div#,
+			INFO_YN = #info_yn#,
+			PROCESS = #process#,
+			PROC_AIDX = #proc_aidx#,
+			MOD_DATE = sysdate,
+			DESCRIPTION = #description#,
+			DIV_NM = #div_nm#,
+			USE = #use#,
+			LIMIT_YN = #limit_yn#,
+			LIMIT_TYPE = #limit_type#,
+			LIMIT_COUNT = #limit_count#,
+			LIMIT_START_HOUR = #limit_start_hour#,
+			LIMIT_END_HOUR = #limit_end_hour#
+		WHERE PIDX = #pidx#
+	</update>
+	
+	<!-- 메시지  -->
+	<resultMap id="sendList" class="egovframework.rte.cms.service.TsmVO">
+		<result property="aidx" column="aidx"/>
+		<result property="priority" column="priority"/>
+		<result property="t_req" column="t_req"/>
+		<result property="reg_date" column="reg_date"/>
+	</resultMap>
+	
+	<select id="tsmDAO.msgSendPriority" parameterClass="tsmVO" resultMap="sendList">
+		SELECT AIDX, PRIORITY, T_REQ, REG_DATE
+		FROM SMART_MESSAGE_SEND
+		WHERE ROWNUM = 1
+	</select>
+	
+	
+	<!-- 메시지 이력관리 리스트 조회-->
+	<resultMap id="historyList" class="egovframework.rte.cms.service.TsmVO">
+		<result property="pidx" column="pidx"/>
+		<result property="mtype" column="mtype"/>
+		<result property="aidx" column="aidx"/>
+		<result property="ukey" column="ukey"/>
+		<result property="message" column="message"/>
+		<result property="receive_num" column="receive_num"/>
+		<result property="sender" column="sender"/>
+		<result property="req_date" column="req_date"/>
+		<result property="reserve_date" column="reserve_date"/>
+		<result property="report_date" column="report_date"/>
+		<result property="req_result" column="req_result"/>
+		<result property="code" column="code"/>
+		<result property="description" column="description"/>
+		<result property="send_date" column="send_date"/>
+	</resultMap>
+	
+	<select id="tsmDAO.msgHistoryCnt" parameterClass="tsmVO" resultClass="int">
+		SELECT COUNT(*) as CNT
+		<![CDATA[
+         	FROM $table_name$
+        ]]>
+		WHERE 1=1
+			<isNotEqual property="mtype" compareValue="All">
+				<isNotNull property="mtype">
+					<isNotEmpty property="mtype">
+				           AND MTYPE = #mtype#
+					</isNotEmpty>
+				</isNotNull>
+			</isNotEqual>
+			<isEqual property="send_type" compareValue="R">
+				<isNotNull property="search_num">
+					<isNotEmpty property="search_num">
+				           AND RECEIVE_NUM LIKE '%' || #search_num# || '%'
+					</isNotEmpty>
+				</isNotNull>
+			</isEqual>
+			<isEqual property="result_value" compareValue="S">
+				<isNotNull property="result_value">
+					<isNotEmpty property="result_value">
+				           AND REQ_RESULT = '1000'
+					</isNotEmpty>
+				</isNotNull>
+			</isEqual>
+			<isEqual property="result_value" compareValue="F">
+				<isNotNull property="result_value">
+					<isNotEmpty property="result_value">
+						<![CDATA[
+				           AND REQ_RESULT <> '1000'
+			           ]]>
+					</isNotEmpty>
+				</isNotNull>
+			</isEqual>
+			<isEqual property="send_type" compareValue="All">
+				<isNotNull property="search_num">
+					<isNotEmpty property="search_num">
+						AND (SENDER LIKE '%' || #search_num# || '%' OR RECEIVE_NUM LIKE '%' || #search_num# || '%')
+					</isNotEmpty>
+				</isNotNull>
+			</isEqual>
+			<isEqual property="send_type" compareValue="S">
+				<isNotNull property="search_num">
+					<isNotEmpty property="search_num">
+				           AND SENDER LIKE '%' || #search_num# || '%'
+					</isNotEmpty>
+				</isNotNull>
+			</isEqual>
+			<isNotNull property="message">
+				<isNotEmpty property="message">
+			           AND MESSAGE LIKE '%' || #message# || '%'
+				</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="code">
+				<isNotEmpty property="code">
+			           AND CODE LIKE '%' || #code# || '%'
+				</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="start_date">
+				<isNotEmpty property="start_date">
+					<isNotEmpty property="last_date">
+						<![CDATA[
+							AND REPORT_DATE >=TO_DATE(#start_date# || ' 00:00:00', 'YYYY-MM-DD HH24:MI:SS') 
+							AND REPORT_DATE <= TO_DATE(#last_date# || ' 23:59:59','YYYY-MM-DD HH24:MI:SS')
+						 ]]>
+					 </isNotEmpty>
+				 </isNotEmpty>
+			 </isNotNull>
+	</select>
+	
+	<select id="tsmDAO.msgHistory" parameterClass="tsmVO" resultMap="historyList">
+		SELECT PIDX, MTYPE, AIDX, UKEY, MESSAGE, RECEIVE_NUM, SENDER, REQ_DATE, RESERVE_DATE, REPORT_DATE, REQ_RESULT, CODE, DESCRIPTION, SEND_DATE
+		FROM (
+			SELECT 
+				ROW_NUMBER() OVER(ORDER BY REPORT_DATE DESC) as IDX, lgs.PIDX, lgs.MTYPE, lgs.AIDX, lgs.UKEY
+				, lgs.MESSAGE, lgs.RECEIVE_NUM, lgs.SENDER, lgs.REQ_DATE, lgs.RESERVE_DATE, lgs.REPORT_DATE, lgs.REQ_RESULT, lgs.CODE, 
+				(SELECT DESCRIPTION FROM SMART_MESSAGE_ERRCODE ec WHERE lgs.REQ_RESULT = ec.CODE AND lgs.MTYPE = ec.MTYPE) DESCRIPTION
+				, SEND_DATE
+  			FROM $table_name$ lgs
+			WHERE 1=1
+				<isNotEqual property="mtype" compareValue="All">
+					<isNotNull property="mtype">
+						<isNotEmpty property="mtype">
+					           AND lgs.MTYPE = #mtype#
+						</isNotEmpty>
+					</isNotNull>
+				</isNotEqual>
+				<isEqual property="send_type" compareValue="All">
+					<isNotNull property="search_num">
+						<isNotEmpty property="search_num">
+							AND (lgs.SENDER LIKE '%' || #search_num# || '%' OR lgs.RECEIVE_NUM LIKE '%' || #search_num# || '%')
+						</isNotEmpty>
+					</isNotNull>
+				</isEqual>
+				<isEqual property="send_type" compareValue="R">
+					<isNotNull property="search_num">
+						<isNotEmpty property="search_num">
+					           AND lgs.RECEIVE_NUM LIKE '%' || #search_num# || '%'
+						</isNotEmpty>
+					</isNotNull>
+				</isEqual>
+				<isEqual property="send_type" compareValue="S">
+					<isNotNull property="search_num">
+						<isNotEmpty property="search_num">
+					           AND lgs.SENDER LIKE '%' || #search_num# || '%'
+						</isNotEmpty>
+					</isNotNull>
+				</isEqual>
+				<isEqual property="result_value" compareValue="S">
+					<isNotNull property="result_value">
+						<isNotEmpty property="result_value">
+					           AND lgs.REQ_RESULT = '1000'
+						</isNotEmpty>
+					</isNotNull>
+				</isEqual>
+				<isEqual property="result_value" compareValue="F">
+					<isNotNull property="result_value">
+						<isNotEmpty property="result_value">
+							<![CDATA[
+					           AND lgs.REQ_RESULT <> '1000'
+				           ]]>
+						</isNotEmpty>
+					</isNotNull>
+				</isEqual>
+				<isNotNull property="message">
+					<isNotEmpty property="message">
+				           AND lgs.MESSAGE LIKE '%' || #message# || '%'
+					</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="code">
+					<isNotEmpty property="code">
+				           AND lgs.CODE LIKE '%' || #code# || '%'
+					</isNotEmpty>
+				</isNotNull>
+				<isNotNull property="start_date">
+					<isNotEmpty property="start_date">
+						<isNotEmpty property="last_date">
+							<![CDATA[
+								AND lgs.REPORT_DATE >=TO_DATE(#start_date# || ' 00:00:00', 'YYYY-MM-DD HH24:MI:SS') 
+								AND lgs.REPORT_DATE <= TO_DATE(#last_date# || ' 23:59:59','YYYY-MM-DD HH24:MI:SS')
+							 ]]>
+						 </isNotEmpty>
+					 </isNotEmpty>
+				 </isNotNull>
+		) a
+		<![CDATA[
+			WHERE IDX > #startNum# AND IDX <= (#recordCount# +#startNum#)
+		]]>
+		ORDER BY REPORT_DATE DESC
+	</select>
+	
+	<!-- 이력관리 상세 -->
+	<select id="tsmDAO.msgHistoryDetail" parameterClass="tsmVO" resultMap="historyList">
+		SELECT lgs.PIDX, lgs.MTYPE, lgs.AIDX, lgs.UKEY, lgs.MESSAGE, lgs.RECEIVE_NUM, lgs.SENDER, lgs.REQ_DATE, lgs.RESERVE_DATE, lgs.REPORT_DATE, lgs.REQ_RESULT, lgs.CODE, ec.DESCRIPTION, lgs.SEND_DATE
+		FROM $table_name$ lgs, SMART_MESSAGE_ERRCODE ec
+		WHERE lgs.REQ_RESULT = ec.CODE AND lgs.MTYPE = ec.MTYPE AND PIDX = #pidx#
+	</select>
+	
+	
+	<!-- 통계 -->
+	<resultMap id="chart" class="egovframework.rte.cms.service.TsmVO">
+		<result property="report_date" column="report_date"/>
+		<result property="n_succ" column="n_succ"/>
+		<result property="n_fail" column="n_fail"/>
+		<result property="a_succ" column="a_succ"/>
+		<result property="a_fail" column="a_fail"/>
+		<result property="s_succ" column="s_succ"/>
+		<result property="s_fail" column="s_fail"/>
+		<result property="l_succ" column="l_succ"/>
+		<result property="l_fail" column="l_fail"/>
+	</resultMap>
+	
+	<select id="tsmDAO.msgChart" parameterClass="tsmVO" resultMap="chart">
+		SELECT
+			<isEqual property="day_type" compareValue="D">
+				TO_CHAR(REPORT_DATE,'yyyy-MM-dd') REPORT_DATE,
+			</isEqual>
+			<isEqual property="day_type" compareValue="M">
+				TO_CHAR(REPORT_DATE,'yyyy-MM') REPORT_DATE,
+			</isEqual>
+			SUM(CASE WHEN MTYPE= 'N' AND REQ_RESULT = '1000' THEN 1 ELSE 0 END) as N_SUCC,
+			SUM(CASE WHEN MTYPE= 'N' AND REQ_RESULT != '1000' THEN 1 ELSE 0 END) as N_FAIL,
+			SUM(CASE WHEN (MTYPE= 'S') AND REQ_RESULT = '1000' THEN 1 ELSE 0 END) as S_SUCC,
+			SUM(CASE WHEN (MTYPE= 'S') AND REQ_RESULT != '1000' THEN 1 ELSE 0 END) as S_FAIL,
+			SUM(CASE WHEN (MTYPE='L') AND REQ_RESULT = '1000' THEN 1 ELSE 0 END) as L_SUCC,
+			SUM(CASE WHEN (MTYPE='L') AND REQ_RESULT != '1000' THEN 1 ELSE 0 END) as L_FAIL,
+			SUM(CASE WHEN MTYPE= 'A' AND REQ_RESULT = '1000' THEN 1 ELSE 0 END) as A_SUCC,
+			SUM(CASE WHEN MTYPE= 'A' AND REQ_RESULT != '1000' THEN 1 ELSE 0 END) as A_FAIL	
+		FROM $table_name$
+		WHERE 1=1
+			<isNotNull property="start_date">
+				<isNotEmpty property="start_date">
+					<isNotNull property="last_date">
+						<isNotEmpty property="last_date">
+							<![CDATA[
+								AND REPORT_DATE >=TO_DATE(#start_date# || ' 00:00:00', 'YYYY-MM-DD HH24:MI:SS') 
+								AND REPORT_DATE <= TO_DATE(#last_date# || ' 23:59:59','YYYY-MM-DD HH24:MI:SS')
+							]]>
+						</isNotEmpty>			
+					</isNotNull>
+				</isNotEmpty>			
+			</isNotNull>
+		<isEqual property="day_type" compareValue="D">
+			GROUP BY TO_CHAR(REPORT_DATE, 'yyyy-MM-dd')
+		</isEqual>
+		<isEqual property="day_type" compareValue="M">
+			GROUP BY TO_CHAR(REPORT_DATE, 'yyyy-MM')
+		</isEqual>
+		ORDER BY REPORT_DATE DESC
+	</select>
+	
+	<!--문구별 통계 -->
+	<resultMap id="codeChart" class="egovframework.rte.cms.service.TsmVO">
+		<result property="code" column="code"/>
+		<result property="n_succ" column="n_succ"/>
+		<result property="n_fail" column="n_fail"/>
+		<result property="a_succ" column="a_succ"/>
+		<result property="a_fail" column="a_fail"/>
+		<result property="s_succ" column="s_succ"/>
+		<result property="s_fail" column="s_fail"/>
+		<result property="l_succ" column="l_succ"/>
+		<result property="l_fail" column="l_fail"/>
+	</resultMap>
+	
+	<select id="tsmDAO.msgChartDetail" parameterClass="tsmVO" resultMap="codeChart">
+		SELECT
+			CODE ,
+			SUM(CASE WHEN MTYPE= 'N' AND REQ_RESULT = '1000' THEN 1 ELSE 0 END) as N_SUCC,
+			SUM(CASE WHEN MTYPE= 'N' AND REQ_RESULT != '1000' THEN 1 ELSE 0 END) as N_FAIL,
+			SUM(CASE WHEN (MTYPE= 'S') AND REQ_RESULT = '1000' THEN 1 ELSE 0 END) as S_SUCC,
+			SUM(CASE WHEN (MTYPE= 'S') AND REQ_RESULT != '1000' THEN 1 ELSE 0 END) as S_FAIL,
+			SUM(CASE WHEN (MTYPE='L') AND REQ_RESULT = '1000' THEN 1 ELSE 0 END) as L_SUCC,
+			SUM(CASE WHEN (MTYPE='L') AND REQ_RESULT != '1000' THEN 1 ELSE 0 END) as L_FAIL,
+			SUM(CASE WHEN MTYPE= 'A' AND REQ_RESULT = '1000' THEN 1 ELSE 0 END) as A_SUCC,
+			SUM(CASE WHEN MTYPE= 'A' AND REQ_RESULT != '1000' THEN 1 ELSE 0 END) as A_FAIL	
+		FROM $table_name$
+		WHERE 1=1
+			<isNotNull property="code">
+				<isNotEmpty property="code">
+					AND CODE LIKE '%' || #code# || '%'
+				</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="start_date">
+				<isNotEmpty property="start_date">
+					<isNotNull property="last_date">
+						<isNotEmpty property="last_date">
+							<![CDATA[
+								AND REPORT_DATE >=TO_DATE(#start_date# || ' 00:00:00', 'YYYY-MM-DD HH24:MI:SS') 
+								AND REPORT_DATE <= TO_DATE(#last_date# || ' 23:59:59','YYYY-MM-DD HH24:MI:SS')
+							]]>
+						</isNotEmpty>			
+					</isNotNull>
+				</isNotEmpty>			
+			</isNotNull>
+		GROUP BY CODE
+		ORDER BY CODE DESC
+	</select>
+	
+	
+	<select id="tsmDAO.msgCodeChart" parameterClass="tsmVO" resultMap="codeChart">
+		SELECT
+			CODE ,
+			SUM(CASE WHEN MTYPE= 'N' AND REQ_RESULT = '1000' THEN 1 ELSE 0 END) as N_SUCC,
+			SUM(CASE WHEN MTYPE= 'N' AND REQ_RESULT != '1000' THEN 1 ELSE 0 END) as N_FAIL,
+			SUM(CASE WHEN (MTYPE= 'S') AND REQ_RESULT = '1000' THEN 1 ELSE 0 END) as S_SUCC,
+			SUM(CASE WHEN (MTYPE= 'S') AND REQ_RESULT != '1000' THEN 1 ELSE 0 END) as S_FAIL,
+			SUM(CASE WHEN (MTYPE='L') AND REQ_RESULT = '1000' THEN 1 ELSE 0 END) as L_SUCC,
+			SUM(CASE WHEN (MTYPE='L') AND REQ_RESULT != '1000' THEN 1 ELSE 0 END) as L_FAIL,
+			SUM(CASE WHEN MTYPE= 'A' AND REQ_RESULT = '1000' THEN 1 ELSE 0 END) as A_SUCC,
+			SUM(CASE WHEN MTYPE= 'A' AND REQ_RESULT != '1000' THEN 1 ELSE 0 END) as A_FAIL	
+		FROM $table_name$
+		WHERE 1=1
+			<isNotNull property="code">
+				<isNotEmpty property="code">
+					AND CODE LIKE '%' || #code# || '%'
+				</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="start_date">
+				<isNotEmpty property="start_date">
+					<isNotNull property="last_date">
+						<isNotEmpty property="last_date">
+								<![CDATA[
+									AND REPORT_DATE >=TO_DATE(#start_date# || ' 00:00:00', 'YYYY-MM-DD HH24:MI:SS') AND REPORT_DATE <= TO_DATE(#last_date# || ' 23:59:59','YYYY-MM-DD HH24:MI:SS')
+								]]>
+						</isNotEmpty>			
+					</isNotNull>
+				</isNotEmpty>			
+			</isNotNull>
+		GROUP BY CODE
+		ORDER BY CODE DESC
+	</select>
+	
+	
+	<select id="tsmDAO.msgCodeChartDetail" parameterClass="tsmVO" resultMap="chart">
+		SELECT
+			<isEqual property="day_type" compareValue="D">
+				TO_CHAR(REPORT_DATE,'yyyy-MM-dd') REPORT_DATE,
+			</isEqual>
+			<isEqual property="day_type" compareValue="M">
+				TO_CHAR(REPORT_DATE,'yyyy-MM') REPORT_DATE,
+			</isEqual>
+			SUM(CASE WHEN MTYPE= 'N' AND REQ_RESULT = '1000' THEN 1 ELSE 0 END) as N_SUCC,
+			SUM(CASE WHEN MTYPE= 'N' AND REQ_RESULT != '1000' THEN 1 ELSE 0 END) as N_FAIL,
+			SUM(CASE WHEN (MTYPE= 'S') AND REQ_RESULT = '1000' THEN 1 ELSE 0 END) as S_SUCC,
+			SUM(CASE WHEN (MTYPE= 'S') AND REQ_RESULT != '1000' THEN 1 ELSE 0 END) as S_FAIL,
+			SUM(CASE WHEN (MTYPE='L') AND REQ_RESULT = '1000' THEN 1 ELSE 0 END) as L_SUCC,
+			SUM(CASE WHEN (MTYPE='L') AND REQ_RESULT != '1000' THEN 1 ELSE 0 END) as L_FAIL,
+			SUM(CASE WHEN MTYPE= 'A' AND REQ_RESULT = '1000' THEN 1 ELSE 0 END) as A_SUCC,
+			SUM(CASE WHEN MTYPE= 'A' AND REQ_RESULT != '1000' THEN 1 ELSE 0 END) as A_FAIL	
+		FROM $table_name$
+		WHERE 1=1
+			AND CODE = #code#
+			<isNotNull property="start_date">
+				<isNotEmpty property="start_date">
+					<isNotNull property="last_date">
+						<isNotEmpty property="last_date">
+							<![CDATA[
+								AND REPORT_DATE >=TO_DATE(#start_date# || ' 00:00:00', 'YYYY-MM-DD HH24:MI:SS') AND REPORT_DATE <= TO_DATE(#last_date# || ' 23:59:59','YYYY-MM-DD HH24:MI:SS')
+							]]>
+						</isNotEmpty>			
+					</isNotNull>
+				</isNotEmpty>			
+			</isNotNull>
+		<isEqual property="day_type" compareValue="D">
+			GROUP BY TO_CHAR(REPORT_DATE, 'yyyy-MM-dd')
+		</isEqual>
+		<isEqual property="day_type" compareValue="M">
+			GROUP BY TO_CHAR(REPORT_DATE, 'yyyy-MM')
+		</isEqual>
+		ORDER BY REPORT_DATE DESC
+	</select>
+	
+	
+	<!-- 관리자 계정정보 리스트 -->
+	<resultMap id="adminList" class="egovframework.rte.cms.service.TsmVO">
+		<result property="idx" column="idx"/>
+		<result property="aidx" column="aidx"/>
+		<result property="name" column="name"/>
+		<result property="phone" column="phone"/>
+		<result property="cp_id" column="cp_id"/>
+		<result property="reg_date" column="reg_date"/>
+		<result property="auth" column="auth"/>
+	</resultMap>
+	
+	<select id="tsmDAO.adminInfoCnt" parameterClass="tsmVO" resultClass="int">
+			SELECT COUNT(*) as CNT
+			FROM SMART_AGENT_INFO
+			WHERE 1=1
+			<isNotNull property="aidx">
+				<isNotEmpty property="aidx">
+					AND AIDX = #aidx#
+				</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="name">
+				<isNotEmpty property="name">
+					AND NAME = #name#
+				</isNotEmpty>
+			</isNotNull>
+	</select>
+	
+	<select id="tsmDAO.adminInfo" parameterClass="tsmVO" resultMap="adminList">
+		SELECT IDX, AIDX, NAME, PHONE, CP_ID, REG_DATE, AUTH
+		FROM
+		(
+			SELECT ROW_NUMBER() OVER(ORDER BY REG_DATE DESC) as IDX, AIDX, NAME, PHONE, CP_ID, TO_CHAR(REG_DATE,'YYYY-MM-DD') REG_DATE, AUTH
+			FROM SMART_AGENT_INFO
+			WHERE 1=1
+			<isNotNull property="aidx">
+				<isNotEmpty property="aidx">
+					AND AIDX LIKE '%' || #aidx# ||'%'
+				</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="name">
+				<isNotEmpty property="name">
+					AND NAME LIKE '%' || #name# ||'%'
+				</isNotEmpty>
+			</isNotNull>
+		) a
+		<![CDATA[
+			WHERE IDX > #startNum# AND IDX <= (#recordCount# +#startNum#)
+		]]>
+		ORDER BY REG_DATE DESC
+	</select>
+	
+	
+	<select id="tsmDAO.adminInfoDetail" parameterClass="tsmVO" resultMap="adminList">
+		SELECT '1' IDX, AIDX, NAME, PHONE, CP_ID, REG_DATE, AUTH
+		FROM SMART_AGENT_INFO
+		WHERe AIDX = #aidx#
+	</select>
+	
+	<insert id="tsmDAO.agentInsert" parameterClass="tsmVO">
+		INSERT INTO SMART_AGENT_INFO(
+			AIDX, NAME, PASSWD, PHONE, CP_ID, REG_DATE, AUTH
+		) VALUES (
+			#aidx#, #name#, #passwd#, #phone#, 'tfgw', sysdate, #auth#
+		)
+	</insert>
+	
+	<update id="tsmDAO.agentUpdate" parameterClass="tsmVO">
+		UPDATE SMART_AGENT_INFO
+		SET
+			NAME = #name#,
+			PHONE = #phone#,
+			auth = #auth#,
+			REG_DATE = sysdate
+			<isNotNull property="passwd">
+				<isNotEmpty property="passwd">
+					, PASSWD = #passwd#
+				</isNotEmpty>
+			</isNotNull>
+		WHERE AIDX = #aidx#
+	</update>
+	
+	<delete id="tsmDAO.agentDelete" parameterClass="tsmVO">
+		DELETE FROM SMART_AGENT_INFO
+		WHERE AIDX = #aidx#
+	</delete>
+	
+	
+	
+	<!-- 수신거부 리스트 -->
+	<resultMap id="refuseList" class="egovframework.rte.cms.service.TsmVO">
+		<result property="idx" column="idx"/>
+		<result property="pidx" column="pidx"/>
+		<result property="mtype" column="mtype"/>
+		<result property="aidx" column="aidx"/>
+		<result property="refuse" column="refuse"/>
+		<result property="receive_num" column="receive_num"/>
+		<result property="src_table" column="src_table"/>
+		<result property="src_desc" column="src_desc"/>
+		<result property="reg_date" column="reg_date"/>
+		<result property="mod_date" column="mod_date"/>
+		<result property="del_desc" column="del_desc"/>
+		<result property="status" column="status"/>
+	</resultMap>
+	
+	<select id="tsmDAO.refuseListCnt" parameterClass="tsmVO" resultClass="int">
+			SELECT COUNT(*) as CNT
+			FROM SMART_MESSAGE_BANLIST
+			WHERE STATUS = 'G'
+			<isNotNull property="mtype">
+				<isNotEmpty property="mtype">
+					<isNotEqual property="mtype" compareValue="AL">
+						AND MTYPE LIKE '%' || #mtype# || '%'
+					</isNotEqual>
+				</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="refuse">
+				<isNotEmpty property="refuse">
+					AND REFUSE = #refuse#
+				</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="aidx">
+				<isNotEmpty property="aidx">
+					AND AIDX LIKE '%' ||#aidx# || '%'
+				</isNotEmpty>
+			</isNotNull>
+			<isNotEqual property = "src_table" compareValue="ALL">
+				<isNotNull property="src_table">
+					<isNotEmpty property="src_table">
+						AND SRC_TABLE = #src_table#
+					</isNotEmpty>
+				</isNotNull>
+			</isNotEqual>
+			<isNotNull property="receive_num">
+				<isNotEmpty property="receive_num">
+					AND RECEIVE_NUM LIKE '%' || #receive_num# || '%'
+				</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="start_date">
+				<isNotEmpty property="start_date">
+					<![CDATA[
+						AND REG_DATE >= #start_date# 
+						AND REG_DATE <= #last_date#
+					]]>
+				</isNotEmpty>
+			</isNotNull>
+	</select>
+	
+	
+	<select id="tsmDAO.refuseList" parameterClass="tsmVO" resultMap="refuseList">
+		SELECT IDX, PIDX, MTYPE, AIDX, REFUSE, RECEIVE_NUM, SRC_TABLE, SRC_DESC, REG_DATE, MOD_DATE, DEL_DESC, STATUS
+		FROM (
+			SELECT 
+			  ROW_NUMBER() OVER(ORDER BY REG_DATE DESC) as IDX, PIDX, MTYPE, AIDX, REFUSE, RECEIVE_NUM
+			  , SRC_TABLE, SRC_DESC, TO_CHAR(REG_DATE,'YYYY-MM-DD') REG_DATE, TO_CHAR(MOD_DATE,'YYYY-MM-DD') MOD_DATE
+			  , DEL_DESC, STATUS
+			FROM SMART_MESSAGE_BANLIST
+			WHERE STATUS = 'G'
+			<isNotNull property="mtype">
+				<isNotEmpty property="mtype">
+					<isNotEqual property="mtype" compareValue="AL">
+						AND MTYPE LIKE '%' || #mtype# || '%'
+					</isNotEqual>
+				</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="refuse">
+				<isNotEmpty property="refuse">
+					AND REFUSE = #refuse#
+				</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="aidx">
+				<isNotEmpty property="aidx">
+					AND AIDX LIKE '%' ||#aidx# || '%'
+				</isNotEmpty>
+			</isNotNull>
+			<isNotEqual property = "src_table" compareValue="ALL">
+				<isNotNull property="src_table">
+					<isNotEmpty property="src_table">
+						AND SRC_TABLE = #src_table#
+					</isNotEmpty>
+				</isNotNull>
+			</isNotEqual>
+			<isNotNull property="receive_num">
+				<isNotEmpty property="receive_num">
+					AND RECEIVE_NUM LIKE '%' || #receive_num# || '%'
+				</isNotEmpty>
+			</isNotNull>
+			<isNotNull property="start_date">
+				<isNotEmpty property="start_date">
+					<![CDATA[
+						AND REG_DATE >= #start_date# 
+						AND REG_DATE <= #last_date#
+					]]>
+				</isNotEmpty>
+			</isNotNull>
+			  ORDER BY REG_DATE DESC
+			) a
+			<![CDATA[
+				WHERE IDX > #startNum# AND IDX <= (#startNum# + #recordCount#)
+			]]>
+			ORDER BY a.REG_DATE DESC
+		
+	</select>
+	
+	
+	<select id="tsmDAO.refuseDetail" parameterClass="tsmVO" resultMap="refuseList">
+		SELECT 
+		  '1' IDX, PIDX, MTYPE, AIDX, REFUSE, RECEIVE_NUM
+		  , SRC_TABLE, SRC_DESC, TO_CHAR(REG_DATE,'YYYY-MM-DD') REG_DATE, TO_CHAR(MOD_DATE,'YYYY-MM-DD') MOD_DATE
+		  , DEL_DESC, STATUS
+		FROM SMART_MESSAGE_BANLIST
+		WHERE PIDX = #pidx#
+	</select>
+	
+	<update id="tsmDAO.refuseModify" parameterClass="tsmVO">
+		UPDATE SMART_MESSAGE_BANLIST
+		SET
+			REFUSE = #refuse#
+			, MTYPE = #mtype#
+			, SRC_TABLE  = #src_table#
+			, MOD_DATE = sysdate			
+		WHERE PIDX = #pidx#
+	</update>
+	
+	<update id="tsmDAO.refuseDelete" parameterClass="tsmVO">
+		UPDATE SMART_MESSAGE_BANLIST
+		SET
+			DEL_DESC = #del_desc#,
+			STATUS = 'D'
+		WHERE PIDX = #pidx#
+	</update>
+	
+	
+	<insert id="tsmDAO.refuseInsert" parameterClass="tsmVO">
+		INSERT INTO SMART_MESSAGE_BANLIST(
+		  PIDX, MTYPE, AIDX, REFUSE, RECEIVE_NUM, SRC_TABLE, SRC_DESC, REG_DATE, STATUS
+		) VALUES (
+		  BANLIST_SEQ.NEXTVAL
+		  	, #mtype#
+		  	, #aidx#
+		  	, 'Y'
+		  	, #receive_num#
+		  	, #src_table#
+		  	, #src_desc#
+		  	, sysdate
+		  	, 'G'
+		)
+		
+		<selectKey keyProperty="pidx" resultClass="String">
+			SELECT BANLIST_SEQ.CURRVAL PIDX 
+			FROM DUAL			
+	   </selectKey>
+	</insert>
+	
+	<insert id="tsmDAO.refuseInsertHistory" parameterClass="tsmVO">
+		INSERT INTO SMART_MESSAGE_BANLIST_HISTORY
+		(
+		  SELECT * 
+		  FROM SMART_MESSAGE_BANLIST
+		  WHERe PIDX = #pidx# 
+		)
+	</insert>
+	
+	
+	<!-- 등록여부 확인 -->
+	<select id="tsmDAO.checkRefuseNum" parameterClass="tsmVO" resultClass="int">
+		SELECT COUNT(*)
+		FROM SMART_MESSAGE_BANLIST
+		WHERE RECEIVE_NUM = #receive_num# AND STATUS= 'G'
+	</select>
+	
+	
+	
+	<resultMap id="chartgraph" class="egovframework.rte.cms.service.TsmVO">
+		<result property="mtype" column="mtype"/>
+		<result property="fail_yn" column="fail_yn"/>
+		<result property="cnt" column="cnt"/>
+	</resultMap>
+	
+	
+	<select id="tsmDAO.msgChartGraph" parameterClass="tsmVO" resultMap="chartgraph">
+		SELECT A.MTYPE, A.FAIL_YN, COUNT(*) AS CNT
+		FROM
+		(
+		  SELECT 
+		  MTYPE, DECODE(req_result, '1000', 'S', 'F') AS FAIL_YN
+		   FROM $table_name$
+		  WHERE REQ_DATE BETWEEN TO_DATE(TO_CHAR(sysdate, 'YYYYMMDD'), 'YYYYMMDD') AND SYSDATE
+		) A
+		GROUP BY A.MTYPE, A.FAIL_YN
+		ORDER BY A.MTYPE DESC
+	</select>
+	
+	
+	<resultMap id="chartgraphdetail" class="egovframework.rte.cms.service.TsmVO">
+		<result property="mtype" column="mtype"/>
+		<result property="code" column="code"/>
+		<result property="cnt" column="cnt"/>
+	</resultMap>
+	
+
+	<select id="tsmDAO.msgChartGraphDetail" parameterClass="tsmVO" resultMap="chartgraphdetail">
+		SELECT A.MTYPE, CODE, count(*) AS CNT
+		FROM
+		(
+			SELECT 
+			MTYPE, CODE, REQ_RESULT
+			 FROM $table_name$
+			WHERE REQ_DATE BETWEEN TO_DATE(TO_CHAR(sysdate, 'YYYYMMDD'), 'YYYYMMDD') AND SYSDATE
+				<![CDATA[
+					  AND REQ_RESULT <> '1000'
+				]]>
+		) A
+		GROUP BY A.MTYPE , A.CODE
+		ORDER BY MTYPE, CNT DESC
+	</select>
+	
+	
+	<select id="tsmDAO.isCodeCheck" parameterClass="tsmVO" resultClass="int">
+		<![CDATA[
+			SELECT COUNT(*) CNT
+			FROM SMART_MESSAGE_TEMPLATE
+			WHERE CODE = #code# AND PROCESS='S' AND USE= 'Y' AND PIDX <> #pidx#		
+		]]>
+	</select>
+	
+</sqlMap>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+	<bean name="propertiesService" class="egovframework.rte.fdl.property.impl.EgovPropertyServiceImpl" destroy-method="destroy">
+		
+		<property name="properties">
+	        <map>
+	        	<entry key="pageUnit" value="5"/>
+	        	<entry key="pageSize" value="10"/>
+	        	
+	        	<!-- 이중화/단일 서버 구분 -->
+	        	<!-- 단일 서버 -->
+	        	<entry key="SERVER_TYPE" value="S"/>			
+	        	<entry key="SERVER_URL1" value="http://10.110.1.229/"/>
+	        	<entry key="MODE" value="DIS"/>
+	        	
+	        	
+	        	<entry key="sessionFail" value="세션이 종료되었습니다. 로그인페이지로 이동합니다."/>
+	        	<entry key="loginFail" value="아이디/비밀번호를 확인해주세요"/>
+	        	<entry key="A" value="알림톡"/>
+	        	<entry key="S" value="SMS"/>
+	        	<entry key="L" value="LMS"/>
+	        	<entry key="N" value="NMS"/>
+	        	
+	        	<entry key="1000" value="성공"/>	        	
+	        	<entry key="N1001" value="등록되지 않은 사용자(N)"/>
+	        	<entry key="N1002" value="파라미터 에러(N)"/>
+	        	<entry key="N1003" value="데이터 처리 에러(N)"/>
+	        	<entry key="1001" value="SERVER Busy"/>
+	        	<entry key="1002" value="수신번호 형식오류"/>
+	        	<entry key="1003" value="회신번호 형식오류"/>
+	        	<entry key="3026" value="메시지와 템플릿의 일치성 확인시 오류 발생"/>
+	        	<entry key="3029" value="메시지가 존재하지 않음"/>
+	        	<entry key="3033" value="템플릿을 찾을 수 없음"/>
+	        	<entry key="3034" value="메시지가 템플릿과 일치하지 않음"/>
+	        	
+	        	
+	        	
+	        	<!-- 이중화 서버 서버 -->
+	        	<!-- <entry key="SERVER_TYPE" value="D"/>	 -->
+	        	<!-- <entry key="SERVER_URL1" value="http://59.12.238.228/"/>
+	        	<entry key="SERVER_URL2" value="http://59.12.238.229/"/> -->
+	        </map>
+		</property>
+	</bean>
+</beans>	
+

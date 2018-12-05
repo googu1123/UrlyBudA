@@ -1,0 +1,56 @@
+URLyBudA
+
+1. Register a URL  --> Short URL 생성
+
+	http://125.131.140.89:2020/uset?gid=tsis05&uid=tsis&l=http://www.google.com&a=0&p=0&e=1540998000000&c=1
+
+2. Update a URL  --> Short URL 업데이트
+
+3. Query URLs  --> Short URL 목록
+
+        {"count":220635
+        ,"data":[
+          {
+          "_id":"1gXg71s"
+          ,"l":"https://www.samsungca rd.com/personal/card/simple- apply/UHPPCA0225M0.jsp?code=AAP1483&alncmpC=MGM1&affco de=MG10012273475"
+          ,"a":"0"
+          ,"p":"1111"
+          ,"e":1527776280000
+          ,"c":6
+          ,"gid ":"9898775053164468- 0"
+          ,"uid":"mirim"
+          ,"pc":0
+          ,"h":0
+          ,"idt":1525824590371
+          ,"wrap":"0"
+          }
+        ]}
+
+4. Get a unique key
+
+5. Register groups --> 캠페인 등록 (기간계)
+
+new Date('2012.08.10').getTime() / 1000
+1541516400
+1573052400
+http://125.131.140.89:2020/group?uid=tsis&gid=tsis03&expires=1573052400&counts=22&authTypes=1&authTypes=2
+
+http://125.131.140.89:2020/group?uid=tsis&gid=11&expires=1541516400&authType=33&counts=44
+
+6. Update a group  --> 캠페인 업데이트
+
+7. Query groups    --> 캠페인 목록
+
+        {"count":56
+        ,"data":[
+          {"_id":"g22","uid":"xx","expire":2,"count":22,"auth Type":"2","idt":1525829633100}
+          ,{"_id":"g11","uid":"xx","expire":1,"count":11,"authType":"1","idt":1525829633100}xž
+          ,{"_id":"30998461942538 66-2","uid":"hottguy","expire":1540998000000,"count":3,"authType":"2","idt":1525824584008}
+        ]}
+
+8. Query click logs
+
+
+
+http://tbroad.ecstel.co.kr:2020  
+root // 2018

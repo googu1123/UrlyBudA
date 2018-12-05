@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Administrator</title>
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <!-- bootstrap 3.0.2 -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- font Awesome -->
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="css/style.css">
+    <!--[if lt IE 9]>
+        <script src="/js/html5shiv.js"></script>
+        <script src="/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="skin-blue">
+    <header class="header">
+        <a href="index.html" class="logo">
+           <img src="img/logo.png" alt="스마트메시징">
+        </a>
+        <nav class="navbar navbar-static-top" role="navigation">
+            <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+            <div class="navbar-right">
+                <ul class="nav navbar-nav">
+
+                    <li class="dropdown user user-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="glyphicon glyphicon-user"></i>
+                            <span>tammo1324<i class="caret"></i></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <!-- User image -->
+                            <li class="user-header">
+                                <img src="img/ico_admin.png" class="img-circle" alt="User Image" />
+                                <p>
+                                    tammo1234
+                                    <small>tsis 모바일 R&amp;D</small>
+                                </p>
+                            </li>
+                            <li class="user-footer">
+                                <div class="pull-left">
+                                    <a href="#" class="btn btn-default btn-flat">프로필</a>
+                                </div>
+                                <div class="pull-right">
+                                    <a href="#" class="btn btn-default btn-flat">로그아웃</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div class="wrapper row-offcanvas row-offcanvas-left">
+        <aside class="left-side sidebar-offcanvas">
+            <section class="sidebar">
+                <!-- Sidebar user panel -->
+                <div class="user-panel">
+                    <div class="pull-left image">
+                        <img src="img/ico_admin.png" class="img-circle" alt="User Image" />
+                    </div>
+                    <div class="pull-left info">
+                        <p>안녕하세요<br>tammo1234님</p>
+
+                        <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                    </div>
+                </div>
+
+                <ul class="sidebar-menu">
+                    <!-- <li class="active">
+                        <a href="#">
+                            <i class="fa fa-home"></i> <span>Home</span>
+                        </a>
+                    </li> -->
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-envelope-o"></i>
+                            <span>메시지 관리</span>
+                            <i class="fa fa-angle-down pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="#"><i class="fa fa-angle-double-right"></i> 메시지규격관리</a></li>
+                            <li><a href="#"><i class="fa fa-angle-double-right"></i> 발송순서관리</a></li>
+                            <li><a href="#"><i class="fa fa-angle-double-right"></i> 메시지발송</a></li>
+                        </ul>
+                    </li>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-calendar-check-o"></i>
+                            <span>이력 관리</span>
+                            <i class="fa fa-angle-down pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="#"><i class="fa fa-angle-double-right"></i> 이력현황</a></li>
+                            <li><a href="#"><i class="fa fa-angle-double-right"></i> 통계</a></li>
+                        </ul>
+                    </li>
+                    <li class="treeview active">
+                        <a href="#">
+                            <i class="fa fa-calendar-check-o"></i>
+                            <span>수신거부</span>
+                            <i class="fa fa-angle-down pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="#"><i class="fa fa-angle-double-right"></i> 수신거부현황</a></li>
+                            <li><a href="#"><i class="fa fa-angle-double-right"></i> 수신거부등록</a></li>
+                        </ul>
+                    </li>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-users"></i>
+                            <span>관리자 설정</span>
+                            <i class="fa fa-angle-right pull-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+
+        <aside class="right-side">
+            <section class="content-header">
+                <h1>
+                    수신거부 등록<br>
+                    <small>스마트 메시징 시스템에서 수신거부 할 메신저를 등록/수정할 수 있습니다.</small>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a href="#"><i class="fa fa-home"></i> Home</a></li>
+                    <li class="active">수신거부 등록</li>
+                </ol>
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+                <div class="tbl_view">
+                    <form action="#" method="post">
+                        <div class="table-responsive">
+                            <table class="table tbl_write">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">수신번호</th>
+                                        <td colspan="3">
+                                            <div class="form-inline">
+                                                <div class="form-group">
+                                                    <input type="tel" class="form-control" placeholder="번호 입력">
+                                                </div>
+                                                <span class="txt_help">'-' 없이 입력</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">신청자 아이디</th>
+                                        <td colspan="3">abcdefghijk</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">수신여부</th>
+                                        <td colspan="3">
+                                            <div class="form-inline">
+                                                <select class="form-control" id="choM">
+                                                    <option value="">선택</option>
+                                                    <option value="N">거부</option>
+                                                    <option value="Y">허용</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <t>
+                                        <th scope="row">알림톡 사용 유무</th>
+                                        <td colspan="3" class="chkList">
+                                            <label class="fwn marr10"><input type="checkbox" class="ichk" id="allChk"> 전체</label>
+                                            <label class="fwn marr10"><input type="checkbox" class="ichk"> 알림톡</label>
+                                            <label class="fwn marr10"><input type="checkbox" class="ichk"> SMS/LMS</label>
+                                            <label class="fwn marr10"><input type="checkbox" class="ichk"> NMS</label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">수신거부 요청 처</th>
+                                        <td colspan="3">
+                                            <div class="form-inline">
+                                                <select class="form-control">
+                                                    <option value="">ARS</option>
+                                                    <option value="">DNC</option>
+                                                    <option value="">콜센터</option>
+                                                    <option value="">기타</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">등록일</th>
+                                        <td>2015-12-12</td>
+                                        <th scope="row">수정일</th>
+                                        <td>2015-12-12</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- /.table-responsive -->
+
+                        <div class="search_btn">
+                            <button type="button" class="btn btn-danger pull-left btn-sm" data-toggle="modal" data-target=".pop_reason">삭제</button>
+                            <button type="button" class="btn btn-primary btn-sm">등록</button>
+                            <button type="button" class="btn btn-default btn-sm">취소</button>
+                        </div>
+                    </form>
+                </div><!-- /.tbl_view -->
+
+            </section><!-- /.content -->
+
+            <!-- reason pop -->
+            <div class="modal fade pop_reason" tabindex="-1" role="dialog" aria-labelledby="previewLabel" data-backdrop="static">
+                <div class="modal-dialog modal-sm">
+                    <form action="#" method="post">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h5 class="modal-title">수신거부 해지 사유 입력</h5>
+                            </div>
+                            <div class="modal-body">
+                                <input type="text" class="form-control" placeholder="사유를 입력하세요." required>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">취소</button>
+                                <button type="button" class="btn btn-primary btn-sm">등록</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- //reason pop -->
+        </aside><!-- /.right-side -->
+    </div><!-- ./wrapper -->
+
+<script src="js/jquery-1.11.3.min.js"></script>
+<script src="js/jquery-ui-1.10.3.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/common.js"></script>
+<script>
+$(document).ready(function(){
+
+    //전체체크
+    iCheckAll();
+
+   //수신여부에 따른 체크박스 활성화
+    $("#choM").change(function(){
+        if($("#choM").val() == "N"){
+            $(".chkList input").iCheck('disable');
+        } else {
+           $(".chkList input").iCheck('enable');
+        }
+    });
+});
+
+function iCheckAll(){
+    //checkbox
+    var $chk_all = $("#allChk").parent(".icheckbox_minimal");
+    var $chk_item = $(".chkList .icheckbox_minimal");
+
+    $chk_all.on('ifChecked', function(){
+        $chk_item.iCheck("check");
+    });
+    $chk_all.on('ifUnchecked', function(){
+        $chk_item.iCheck("uncheck");
+    })
+}
+</script>
+</body>
+</html>

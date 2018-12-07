@@ -1,5 +1,5 @@
 body {
-	background: #fff;
+	background: #e4e4e4;
 	color: #222;
 	font: 12px/20px 'Helvetica Neue', Arial, sans-serif;
 	margin: 0;
@@ -83,15 +83,15 @@ a {
 /* Graph */
 /* Containers */
 #wrapper {
-	height: 420px;
+	height: 300px;
 	left: 10px;
 	margin: 10px 0 0 10px;
 	position: absolute;
 	top: 1%;
-	width: 800px;
+	width: 750px;
 }
 #figure {
-	height: 380px;
+	height: 300px;
 	position: relative;
 }
 #figure ul {
@@ -112,10 +112,11 @@ a {
 	bottom: 0;
 	position: absolute;
 	text-align: center;
-	width: 860px;
+	width: 750px;
 	top: 222px;
 	z-index: 200;
 	display: none;
+	height:20px;
 }
 .legend li {
 	display: block;
@@ -124,7 +125,7 @@ a {
 	margin: 0;
 	padding: 10px 5px;
 	width: 70px;
-	color: #FFF;
+	color: #fff;
 	text-shadow: rgba(0, 0, 0, 0.5) 0 1px 0;
 }
 /*
@@ -231,6 +232,7 @@ a {
 	font-size: 30px;
 	opacity: 60%;
 	color: #FFF;
+	/* color: #d62825ab; */
 	/*
 	background: #fefefe;
 	border-radius: 3px;

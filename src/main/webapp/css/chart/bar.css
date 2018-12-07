@@ -16,7 +16,10 @@
   background: -moz-linear-gradient(right, #858585 , #323232); /* For Firefox 3.6 to 15 */
   background: linear-gradient(to right, #858585 , #323232); /* Standard syntax */
 }
-.fig1, .fig5, .fig9 {
+/*
+.fig1, .fig5, .fig9 {*
+*/
+.fig1, .fig5 {	
 	background: #65c2e8; /* For browsers that do not support gradients */
   background: -webkit-linear-gradient(left, #65C2E8 , #2075A8); /* For Safari 5.1 to 6.0 */
   background: -o-linear-gradient(right, #65C2E8 , #2075A8); /* For Opera 11.1 to 12.0 */

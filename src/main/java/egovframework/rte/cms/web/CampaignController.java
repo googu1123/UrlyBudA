@@ -520,8 +520,6 @@ public class CampaignController {
 
 		System.out.println("in >>>>>>"+in);
 		
-
-		
 		String result = HttpConnection.PostData(Common.SHORT_URL_SERVER+"/clicks?",in);
 		
 		System.out.println("result >> " + result);
@@ -541,8 +539,25 @@ public class CampaignController {
 				System.out.println("gid >> " + gid);
 				System.out.println("_id >> " + _id);
 				
+				
+				String result ="{\"uid\":\"root\",\"gid\":\"tbroad007\",\"count\":\"464\",\"data\":[{\"code\":\"200\",\"cnt\":\"70\"},{\"code\":\"302\",\"cnt\":\"69\"},{\"code\":\"200\",\"cnt\":\"10\"},{\"code\":\"242\",\"cnt\":\"1\"},{\"code\":\"243\",\"cnt\":\"100\"},{\"code\":\"244\",\"cnt\":\"100\"},{\"code\":\"401\",\"cnt\":\"89\"},{\"code\":\"404\",\"cnt\":\"45\"},{\"code\":\"500\",\"cnt\":\"50\"}]}";
+				
+				JSONObject resultJson = new JSONObject(result);
+				System.out.println("data >>>>>>"+resultJson.get("data"));
+				
+			
+				JSONArray jarr = new JSONArray();
+				jarr = resultJson.getJSONArray("data");
+				
+				List list = new ArrayList();
+				for (int i = 0; i<jarr.length(); i++)
+				{
+					list = JsonHelper.toList(jarr);
+				}
+				
+				model.addAttribute("codeList", list);
+				model.addAttribute("count", resultJson.get("count"));
 				model.addAttribute("gid", gid);
-				model.addAttribute("_id", _id);
 				
 				return "/url/url_010103";
 			} else {
@@ -575,10 +590,10 @@ public class CampaignController {
 		String skip 	= jsonObject.isNull("skip")?"":jsonObject.get("skip").toString();
 		String gid 		= jsonObject.isNull("gid")?"":jsonObject.get("gid").toString();
 		
-		System.out.println("gid >>>>>>"+gid);
-		System.out.println("s >>>>>>"+s);
-		System.out.println("limit >>>>>>"+limit);
-		System.out.println("skip >>>>>>"+skip);
+		System.out.println("gid >>>>>> "+gid);
+		System.out.println("s >>>>>> "+s);
+		System.out.println("limit >>>>>> "+limit);
+		System.out.println("skip >>>>>> "+skip);
 		
 		String in = "limit="+limit
 					+"&skip="+skip
@@ -597,11 +612,6 @@ public class CampaignController {
 		return result;
 	}
 	
-	
-	
-	
-	
-
 }
 
 

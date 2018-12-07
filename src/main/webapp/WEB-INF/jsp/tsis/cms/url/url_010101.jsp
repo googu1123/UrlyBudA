@@ -153,7 +153,7 @@
 					var popupY= (window.screen.height /2) - (400 / 2);
 					// 만들 팝업창 상하 크기의 1/2 만큼 보정값으로 빼주었음
 					
-					window.open('about:blank','statView','width=800,height=450, left='+ popupX + ',top='+ popupY + ', screenX='+ popupX + ', screenY= '+ popupY+'');
+					window.open('about:blank','statView','width=830,height=470, left='+ popupX + ',top='+ popupY + ', screenX='+ popupX + ', screenY= '+ popupY+'');
 					
 					var form = document.createElement("form");
 				    var element1 = document.createElement("input");

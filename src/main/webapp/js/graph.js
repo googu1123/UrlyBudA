@@ -47,8 +47,11 @@ $(document).ready(function() {
 			// Get highest value for y-axis scale
 			chartYMax: function() {
 				var chartData = this.chartData();
+				
 				// Round off the value
-				var chartYMax = Math.ceil(Math.max.apply(Math, chartData) / 1000) * 100;
+				//var chartYMax = Math.ceil(Math.max.apply(Math, chartData) / 1000) * 100;
+				var chartYMax = Math.max.apply(Math, chartData) + 20;
+				
 				return chartYMax;
 			},
 			// Get y-axis data from table cells

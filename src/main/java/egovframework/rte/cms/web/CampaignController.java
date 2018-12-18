@@ -539,7 +539,11 @@ public class CampaignController {
 				System.out.println("gid >> " + gid);
 				System.out.println("_id >> " + _id);
 				
-				String result ="{\"uid\":\"root\",\"gid\":\"tbroad007\",\"count\":\"464\",\"data\":[{\"code\":\"200\",\"cnt\":\"70\"},{\"code\":\"302\",\"cnt\":\"69\"},{\"code\":\"200\",\"cnt\":\"10\"},{\"code\":\"242\",\"cnt\":\"1\"},{\"code\":\"243\",\"cnt\":\"100\"},{\"code\":\"244\",\"cnt\":\"100\"},{\"code\":\"401\",\"cnt\":\"89\"},{\"code\":\"404\",\"cnt\":\"45\"},{\"code\":\"500\",\"cnt\":\"50\"}]}";
+				String in = "gid="+gid;
+				//String result ="{\"uid\":\"root\",\"gid\":\"tbroad007\",\"count\":\"464\",\"data\":[{\"code\":\"200\",\"cnt\":\"70\"},{\"code\":\"302\",\"cnt\":\"69\"},{\"code\":\"200\",\"cnt\":\"10\"},{\"code\":\"242\",\"cnt\":\"1\"},{\"code\":\"243\",\"cnt\":\"100\"},{\"code\":\"244\",\"cnt\":\"100\"},{\"code\":\"401\",\"cnt\":\"89\"},{\"code\":\"404\",\"cnt\":\"45\"},{\"code\":\"500\",\"cnt\":\"50\"}]}";
+				
+				String result = HttpConnection.PostData(Common.SHORT_URL_SERVER+"/aggregate_code?",in);
+				System.out.println("result >> " + result);
 				
 				JSONObject resultJson = new JSONObject(result);
 				System.out.println("data >>>>>>"+resultJson.get("data"));
@@ -554,7 +558,7 @@ public class CampaignController {
 				}
 				
 				model.addAttribute("codeList", list);
-				model.addAttribute("count", resultJson.get("count"));
+				model.addAttribute("count", resultJson.get("cnt"));
 				model.addAttribute("gid", gid);
 				
 				return "/url/url_010103";

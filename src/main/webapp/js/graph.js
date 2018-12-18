@@ -16,6 +16,7 @@ $(document).ready(function() {
 		var chartYMax;
 		var columnGroups;
 
+		
 		// Timer variables
 		var barTimer;
 		var graphTimer;

@@ -456,6 +456,60 @@ public class CampaignController {
 		
 	}
 	
+	//캠페인 정보 삭제
+	@RequestMapping("/campaignDelete.do")
+	public @ResponseBody String campaignDelete(
+			@RequestBody String data,
+			HttpServletRequest request, 
+			HttpServletResponse response, 
+			HttpSession session
+			) throws Exception {
+		
+		System.out.println(">>>> campaignDelete.do");
+			
+
+		JSONObject jsonObject = new JSONObject(data);
+		String gid = (String) jsonObject.get("gid");
+		
+		String in = "gid="+gid;
+		System.out.println("in>>>"+in);
+		
+		String result = HttpConnection.PostData(Common.SHORT_URL_SERVER+"/del?",in);
+		System.out.println("result >> " + result);
+		
+		String cnt = "";
+		
+		try{
+			JSONObject groupJson = new JSONObject(result);
+			System.out.println("group >>>>>>"+groupJson.get("group"));
+			
+			JSONObject gResultJson = new JSONObject(groupJson.get("group").toString());
+			JSONObject uResultJson = new JSONObject(groupJson.get("url").toString());
+			
+			System.out.println("group n >>>>>>"+gResultJson.get("n"));
+			System.out.println("group ok >>>>>>"+gResultJson.get("ok"));
+			
+			System.out.println("url n >>>>>>"+uResultJson.get("n"));
+			System.out.println("url ok >>>>>>"+uResultJson.get("ok"));
+			
+			result = "ok";
+			cnt = uResultJson.get("n").toString();
+
+		}catch(Exception e){
+		}
+				
+		  
+		JSONObject out = new JSONObject();
+		out.put("result", result);
+		out.put("cnt", cnt);
+		//out.put("result", result);
+		
+		System.out.println("out >>" + out.toString());
+		
+		return out.toString();
+		
+	}
+	
 	
 	@RequestMapping("/logView.do")
 	public String logView(Model model, HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {

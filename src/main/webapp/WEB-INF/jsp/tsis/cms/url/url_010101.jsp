@@ -39,13 +39,20 @@
 	<script type="text/javascript" language="javascript">
 	$(document).ready(function()
 	{
+		
+		document.groupForm.expires.value = formatDate(Number('${group.expire}'));
+		var gIdt = new Date(Number('${group.idt}'));
+		$("#g_idt").empty().html(gIdt.toLocaleString());
+			
+		/*
 		var g_expires = ${group.expire};
 		document.groupForm.expires.value = formatDate(g_expires);
 		
 		var g_idt = ${group.idt};
 		var gIdt = new Date(g_idt);
 		$("#g_idt").empty().html(gIdt.toLocaleString());
-
+		*/
+		
 		boardMain.init();
 	});
 	
@@ -228,7 +235,6 @@
 	    			//console.info($(this).attr('id'));
 	    			var sUrl = $(this).attr('id');
 	    			window.open('http://tbroad.ecstel.co.kr/'+sUrl);
-	    			
 	    		}); 
 	    		
 	    		//달력
@@ -246,6 +252,49 @@
 	    		// 목록
 	    		$("#btnList").on("click", function(){
 	    			movePage({},"campaign.do");
+	    		});
+	    		
+	    		// 캠페인 삭제
+	    		$("#btnDelete").on("click",function(){
+	    		
+	    			var f = document.groupForm;
+	    			
+	    			if(confirm("해당 캠페인을 삭제 하시겠습니까?")){
+	    				$.ajax({ 
+	   						type:"POST",
+	   						url: 'campaignDelete.do', 
+	   						dataType: "json", 
+	   						//data : "uid="+UID+"&limit="+LIMIT+"&pageNo="+pageNo,
+	   						 
+	   						data :JSON.stringify({
+	   							gid: f.gid.value
+	   						}),
+	   						contentType:"application/json; charset=UTF-8", 
+	   						cache : false, 
+	   						success : function(resData){
+	   							var jsonObj = JSON.stringify(resData);
+	   							var jsonData = JSON.parse(jsonObj);
+	   							
+	   							if(jsonData.result=='ok')
+	   							{
+	   								alert('캠페인 삭제 하였습니다.(삭제 URL : '+jsonData.cnt+')');
+	   								movePage({},"campaign.do");
+	   								
+	   							}else{
+	   								alert('캠페인 삭제에 실패하였습니다.\n관리자에게 문의하세요. ['+jsonData.result+']');
+	   								//$('.dim-layer').fadeOut();
+	   								return false;
+	   							}
+	   							
+	   						}, 
+	   						//ajax error 확인방법 
+	   						error : function(request,status,error){ 
+	   							console.log(request); 
+	   							console.log(status); 
+	   							console.log(error); 
+	   						} 
+	   					});
+	    			}	
 	    		});
 	    		
 	    		// 캠페인 수정
@@ -613,6 +662,7 @@
                             </div>
                             <div style="float:right;margin: 10px 0px 30px;">
                             	<button type="button" id="btnUpdate" class="btn btn-info  btn-sm"> 캠페인 수정</button>
+                            	<button type="button" id="btnDelete" class="btn btn-info  btn-sm"> 캠페인 삭제</button>
                             </div>
                         </div>
                         

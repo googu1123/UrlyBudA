@@ -322,9 +322,9 @@
                         <table class="table tbl_list tbl_fixed">
                         	<colgroup>
 								<col style="width:150px;">
-								<col style="width:160px;">
-								<col style="width:150px;">
-								<col style="width:100px;">
+								<col style="width:200px;">
+								<col style="width:200px;">
+								<col style="width:200px;">
 								<col style="width:100px;">
 								<col style="*;">
                             </colgroup>

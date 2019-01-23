@@ -34,7 +34,7 @@
     
     	<property name="validationQuery" value="select 1 from dual"/>
 		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-		<property name="url" value="jdbc:mysql://127.0.0.1:3306/SMART_MESSAGE?characterEncoding=UTF8"/>
+		<property name="url" value="jdbc:mysql://127.0.0.1:3306/SMART_MESSAGE?characterEncoding=UTF-8"/>
 		<property name="username" value="root"/>
 		<property name="password" value="tsis1123"/>
 	</bean>
@@ -42,7 +42,7 @@
 	<bean id="dataSource2" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="validationQuery" value="select 1 from dual"/>
 		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-		<property name="url" value="jdbc:mysql://127.0.0.1:3306/SMART_MESSAGE?characterEncoding=UTF8"/>
+		<property name="url" value="jdbc:mysql://127.0.0.1:3306/SMART_MESSAGE?characterEncoding=UTF-8"/>
 		<property name="username" value="root"/>
 		<property name="password" value="tsis1123"/>
 	</bean> 
